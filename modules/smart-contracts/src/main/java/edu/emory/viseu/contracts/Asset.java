@@ -1,13 +1,35 @@
 package edu.emory.viseu.contracts;
 
-import org.hyperledger.fabric.gateway.Contract;
-import org.hyperledger.fabric.gateway.ContractException;
-import org.hyperledger.fabric.gateway.Gateway;
-import org.hyperledger.fabric.gateway.Network;
-import org.hyperledger.fabric.gateway.Wallet;
-import org.hyperledger.fabric.gateway.Wallets;
+import org.hyperledger.fabric.contract.annotation.DataType;
+import org.hyperledger.fabric.contract.annotation.Property;
+import org.json.JSONObject;
 
+@DataType()
 public class Asset {
+
+    @Property()
+    private String name;
+
+    @Property()
+    private String value;
+
+    public String getName(){
+        return name;
+    }
+
+    public String getValue(){return value;}
+
+    public void setName(String name){
+        this.name = name;
+    }
+    public void setValue(String value){
+        this.value = value;
+    }
+
+
+
+
+
 
 
 }
