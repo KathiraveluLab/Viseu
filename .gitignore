@@ -1,9 +1,11 @@
 # Compiled class file
 *.class
-
+.DS_Store
+.idea
+target/
 # Log file
 *.log
-
+*.iml
 # BlueJ files
 *.ctxt
 
