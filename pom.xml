@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>edu.emory.viseu</groupId>
-    <artifactId>SmartContracts</artifactId>
+    <artifactId>smart-contracts</artifactId>
     <version>0.1.0</version>
 
     <build>

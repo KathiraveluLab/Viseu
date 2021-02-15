@@ -1,3 +1,5 @@
+package edu.emory.viseu.contracts;
+
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Gateway;
