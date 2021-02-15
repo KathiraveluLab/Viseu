@@ -25,6 +25,15 @@ public class Asset {
     public void setValue(String value){
         this.value = value;
     }
+    public String toJSONString(){
+        return new JSONObject(this).toString();
+    }
+    public static Asset fromJSONString(String json){
+        String value = new JSONObject(json).getString("value");
+        Asset asset = new Asset();
+        asset.setValue(value);
+        return asset;
+    }
 
 
 
