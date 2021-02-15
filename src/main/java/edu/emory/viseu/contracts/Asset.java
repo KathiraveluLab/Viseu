@@ -7,8 +7,7 @@ import org.hyperledger.fabric.gateway.Network;
 import org.hyperledger.fabric.gateway.Wallet;
 import org.hyperledger.fabric.gateway.Wallets;
 
+public class Asset {
 
-
-public class Agreement {
 
 }
