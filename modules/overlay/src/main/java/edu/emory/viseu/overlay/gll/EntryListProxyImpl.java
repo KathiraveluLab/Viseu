@@ -1,8 +1,11 @@
-package edu.emory.viseu.overlay;
+package edu.emory.viseu.overlay.gll;
 
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EntryListProxyImpl implements EntryList {
+
     private EntryList entryList;
     public List<DICOMEntry> getEntryList()
     {
