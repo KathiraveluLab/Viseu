@@ -1,4 +1,4 @@
-package edu.emory.viseu.overlay;
+package edu.emory.viseu.overlay.gll;
 
 public class DICOMList {
     String workflowDescription;
