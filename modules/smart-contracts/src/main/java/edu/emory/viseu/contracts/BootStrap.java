@@ -9,19 +9,24 @@ import java.net.URL;
 import java.util.Map;
 
 public class BootStrap {
+    String file_path;
 
-    public static void callStartUpScript(String file_path, String[] args) throws IOException {
+
+    public BootStrap(String file_path){
+        this.file_path = file_path;
+    }
+
+    public int callStartUpScript() throws IOException {
         Process p1 = Runtime.getRuntime().exec("pwd");
 
         URL shell_path = BootStrap.class.getResource(file_path);
         Process p2 = Runtime.getRuntime().exec("./" + shell_path);
 
+        return p2.getErrorStream() != null ? 0 : 1;
 
 
     }
 
-    public static void main(String[] args) throws IOException {
-        callStartUpScript("/scripts/startup.sh", null);
-    }
+
 
 }
