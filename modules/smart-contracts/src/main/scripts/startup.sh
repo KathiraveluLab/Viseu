@@ -5,3 +5,7 @@ echo "========Starting Network========="
 cd ../../../visue-net
 ./network.sh up createChannel
 
+echo "========Stopping Network========="
+
+./network.sh down
+
