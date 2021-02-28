@@ -43,11 +43,12 @@
             </plugin>
 
 
+
         </plugins>
         <resources>
             <resource>
                 <directory>src/main/scripts/</directory>
-                <targetPath>scripts</targetPath>
+<!--                <targetPath>scripts/</targetPath>-->
             </resource>
             <resource>
             <directory>viseu-net</directory>

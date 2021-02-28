@@ -17,10 +17,11 @@ public class BootStrap {
     }
 
     public int callStartUpScript() throws IOException {
-        Process p1 = Runtime.getRuntime().exec("pwd");
+//        Process p1 = Runtime.getRuntime().exec("pwd");
 
-        URL shell_path = BootStrap.class.getResource(file_path);
-        Process p2 = Runtime.getRuntime().exec("./" + shell_path);
+//        URL shell_path = BootStrap.class.getResource(file_path);
+        Process p2 = Runtime.getRuntime().exec("src/main/scripts/startup.sh");
+
 
         return p2.getErrorStream() != null ? 0 : 1;
 
