@@ -41,6 +41,23 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>Install Dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>src/main/scripts/install-dependencies.sh</executable>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
 
 
@@ -56,6 +73,7 @@
         </resource>
         </resources>
     </build>
+
 
     <dependencies>
 
