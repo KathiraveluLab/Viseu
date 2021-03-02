@@ -28,7 +28,7 @@ This module contains the code to the Smart Contracts that will govern how nodes 
   
 
 ## Viseu-Network
-The viseu-network directory is a modified version of the hyperledger favric test network which can be used for proof of concept. To instantiate the network from the smart contracts module: 
+The viseu-net directory is a modified version of the hyperledger fabric test network which can be used for proof of concept. To instantiate the network from the smart contracts module: 
 - Run Bootstrap.java 
 
 A local hyperledger fabric is now started on your machine.
