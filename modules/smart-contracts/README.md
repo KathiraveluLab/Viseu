@@ -10,7 +10,7 @@ This module contains the code to the Smart Contracts that will govern how nodes 
 ## Build Status
 
  - Deployed dummy smart contract and asset
- - Still developing Bootstrap.java 
+ - Bootstrap.java provides basic network operation functionality
 
 ## Technologies Used
 
@@ -24,12 +24,12 @@ This module contains the code to the Smart Contracts that will govern how nodes 
  1. Run `git clone https://github.com/Emory-HITI/Viseu.git` to clone this repository.
  2. Next cd into the smart-contracts module `cd module/smart-contracts/`
  3. Install necessary dependencies `mvn clean install`
- 4. Bootstrap the network `javac Bootstrap.java` ->  `java Bootstrap` 
+ 4. Dependencies will be automatically installed through a shell script
+  
 
 ## Viseu-Network
 The viseu-network directory is a modified version of the hyperledger favric test network which can be used for proof of concept. To instantiate the network from the smart contracts module: 
-- `cd viseu-network` 
-- `./network.sh up createChannel`
+- Run Bootstrap.java 
 
 A local hyperledger fabric is now started on your machine.
 
