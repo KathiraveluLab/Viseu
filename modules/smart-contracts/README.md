@@ -26,7 +26,7 @@ This module contains the code to the Smart Contracts that will govern how nodes 
  7. Your node should be started
  
 ## Modifying genesis.json
-1. Included in the genesis.json file are dummy accounts with wei for testing with unique account identifier numbers
+1. Included in the `genesis.json` file are dummy accounts with wei for testing with unique account identifier numbers
 2. These account identifiers must be changed to reflect your current network iteration's account
 3. To create a new account run `geth --datadir <path to admin node> account new`
 4. Set and memorize your password
