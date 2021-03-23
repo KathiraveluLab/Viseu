@@ -23,7 +23,7 @@ This module contains the code to the Smart Contracts that will govern how nodes 
  1. Create a directory for your node e.g. `mkdir node01`  
  2. Next cd into your node `cd node01`  
  3. Make sure your genesis.json file is modified (see modifying genesis.json section)
- 4. run `geth --datadir <path to node dir> init genesis.json`  
+ 4. run `geth --datadir node01/ init genesis.json` substituting your node directory in for `node01/`  
  5. Next switch the `cmd.sh` file to reflect the name and filepath of your intialized node  
  6. Run `./cmd.sh`
  7. Your node should be started
@@ -31,7 +31,7 @@ This module contains the code to the Smart Contracts that will govern how nodes 
 ## Modifying genesis.json
 1. Included in the `genesis.json` file are dummy accounts with wei for testing with unique account identifier numbers
 2. These account identifiers must be changed to reflect your current network iteration's account
-3. To create a new account run `geth --datadir <path to admin node> account new`
+3. To create a new account run `geth --datadir node01/ account new` assuming `node01/` is your selected admin node
 4. Set and memorize your password
 5. Copy and paste the output hash without the hexadecimal prefix into the genesis.json file instead of the given account hash
 
