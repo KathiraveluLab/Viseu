@@ -5,15 +5,18 @@ This module contains the code to the Smart Contracts that will govern how nodes 
 
 ## Technologies Used
 
-- Ubuntu  
+- Ubuntu/MacOS
 - Ethereum  
 - Go-Ethereum (GETH)  
 - Ethereum Brownie  
 
-## Install GETH and Ethereum
+## Install GETH and Ethereum on Ubuntu
 1. `sudo add-apt-repository -y ppa:ethereum/ethereum`  
 2. `sudo apt-get install ethereum`
 
+## Install GETH and Ethereum on MacOS
+`brew tap ethereum/ethereum`
+`brew install ethereum`
 
 ## Creating a Node
 
