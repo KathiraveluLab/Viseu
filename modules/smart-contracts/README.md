@@ -15,8 +15,8 @@ This module contains the code to the Smart Contracts that will govern how nodes 
 2. `sudo apt-get install ethereum`
 
 ## Install GETH and Ethereum on MacOS
-`brew tap ethereum/ethereum`  
-`brew install ethereum`  
+1. `brew tap ethereum/ethereum`  
+2. `brew install ethereum`  
 
 ## Creating a Node
 
