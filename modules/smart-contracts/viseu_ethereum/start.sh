@@ -1,12 +1,10 @@
 #!/bin/bash
 
-echo "What node is this?"
-echo "Type in the form 'node<number>' where number is of the form 0<number> if num<10"
-read nodenum
+
 
 
 if [ -d "$nodenum" ]; then
-    rm -rf $FILE
+    rm -rf $1
 fi
 
 GENESIS=./genesis.json
@@ -14,9 +12,9 @@ if [ ! -f "$GENESIS" ]; then
     echo "genesis.json does not exist" && exit
 fi
 
-mkdir $nodenum
+mkdir $1
 
-geth --datadir $nodenum init genesis.json
+geth --datadir $1 init genesis.json
 
 FILE1=./node_log.out
 if [ -f "$FILE1" ]; then
@@ -26,4 +24,4 @@ fi
 fuser -k 30303/tcp
 fuser -k 30323/tcp
 
-nohup ./cmd.sh > node_log.out &
+nohup eth --identity $1 --rpc --rpcport "8000" --rpccorsdomain "*" --datadir $1 --port "30303" --nodiscover --rpcapi "db,eth,net,web3,personal,miner,admin" --networkid 1900 --nat "any" > node_log.out &
