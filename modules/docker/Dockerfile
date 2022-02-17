@@ -1,30 +1,14 @@
-#Majority taken from geth dockerfile
 
+FROM ethereum/client-go:v1.10.1
 
-ARG COMMIT=""
-ARG VERSION=""
-ARG BUILDNUM=""
+ARG ACCOUNT_PASSWORD
 
-# Build Geth in a stock Go builder container
-FROM golang:1.17-alpine as builder
+COPY genesis.json /tmp
 
-RUN apk add --no-cache gcc musl-dev linux-headers git
+RUN geth init /tmp/genesis.json \
+    && rm -f ~/.ethereum/geth/nodekey \
+    && echo ${ACCOUNT_PASSWORD} > /tmp/password \
+    && geth account new --password /tmp/password \
+    && rm -f /tmp/password
 
-ADD . /go-ethereum
-RUN cd /go-ethereum && go run build/ci.go install ./cmd/geth
-
-# Pull Geth into a second stage deploy alpine container
-FROM alpine:latest
-
-RUN apk add --no-cache ca-certificates
-COPY --from=builder /go-ethereum/build/bin/geth /usr/local/bin/
-
-EXPOSE 8545 8546 30303 30303/udp
 ENTRYPOINT ["geth"]
-
-# Add some metadata labels to help programatic image consumption
-ARG COMMIT=""
-ARG VERSION=""
-ARG BUILDNUM=""
-
-LABEL commit="$COMMIT" version="$VERSION" buildnum="$BUILDNUM"
