@@ -14,7 +14,16 @@ class MeasurementClient:
     def __init__(self):
         self.api_key = os.getenv("RIPE_ATLAS_API_KEY")
         if not self.api_key:
-            print("WARNING: RIPE_ATLAS_API_KEY for measurement client is not set in environment.")
+            env_path = os.path.join(os.path.dirname(__file__), ".env")
+            if os.path.exists(env_path):
+                with open(env_path, "r") as f:
+                    for line in f:
+                        if line.startswith("RIPE_ATLAS_API_KEY="):
+                            self.api_key = line.split("=")[1].strip()
+                            break
+        
+        if not self.api_key:
+            print("WARNING: RIPE_ATLAS_API_KEY for measurement client is not set in environment or .env file.")
 
     def create_ping_measurement(self, target_ip, label="viseu-latency-check"):
         """
