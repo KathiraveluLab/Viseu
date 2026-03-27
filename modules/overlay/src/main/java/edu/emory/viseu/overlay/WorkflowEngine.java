@@ -46,6 +46,7 @@ public class WorkflowEngine {
      */
     private void executeTask(Task task) {
         logger.info("Dispatching " + task);
+        task.setStartTime(System.currentTimeMillis());
 
         // 1. Find the best peer using the Adaptive Scheduler
         Optional<Peer> optimalPeer = AdaptiveScheduler.findBestPeer(task.getServiceRequired());
@@ -58,6 +59,7 @@ public class WorkflowEngine {
             Object result = simulateRemoteExecution(target, task);
             
             task.setOutput("[EDGE] " + result);
+            task.setEndTime(System.currentTimeMillis());
             task.setCompleted(true);
             logger.info("Task " + task.getId() + " COMPLETED on EDGE node " + target.getId());
         } else {
@@ -66,6 +68,7 @@ public class WorkflowEngine {
             Object cloudResult = CloudBurstingBridge.executeOnCloud(task);
             
             task.setOutput("[CLOUD] " + cloudResult);
+            task.setEndTime(System.currentTimeMillis());
             task.setCompleted(true);
             logger.info("Task " + task.getId() + " COMPLETED on CLOUD.");
         }

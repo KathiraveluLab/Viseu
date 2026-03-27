@@ -37,6 +37,10 @@ public class ViseuExecutor {
 
         WorkflowEngine engine = new WorkflowEngine();
         engine.run(workflow);
+
+        // Automated Benchmarking (Task 4)
+        logger.info("Starting automated benchmark (3 iterations)...");
+        new ViseuBenchmark().runBenchmark(3);
 		
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);

@@ -13,6 +13,10 @@ public class Task {
     private Object input;
     private Object output;
     private boolean completed;
+    
+    // Performance Telemetry (Task 4)
+    private long startTime;
+    private long endTime;
 
     public Task(String id, String serviceRequired) {
         this.id = id;
@@ -34,6 +38,12 @@ public class Task {
     public void setOutput(Object output) { this.output = output; }
     public boolean isCompleted() { return completed; }
     public void setCompleted(boolean completed) { this.completed = completed; }
+
+    public long getStartTime() { return startTime; }
+    public void setStartTime(long startTime) { this.startTime = startTime; }
+    public long getEndTime() { return endTime; }
+    public void setEndTime(long endTime) { this.endTime = endTime; }
+    public long getDuration() { return (endTime > startTime) ? (endTime - startTime) : 0; }
 
     @Override
     public String toString() {
