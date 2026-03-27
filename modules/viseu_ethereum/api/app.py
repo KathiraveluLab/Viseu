@@ -26,12 +26,30 @@ def build_ct_classifier():
 
     pass
 
+from measurement_client import MeasurementClient
+
 app = Flask(__name__)
 app.secret_key = 'secret'
+measurement_client = MeasurementClient()
 
 @app.route('/isAlive')
 def index():
     return "true"
+
+@app.route('/viseu/api/latency', methods=['POST'])
+def measure_latency():
+    data = request.get_json()
+    target_ip = data.get('target_ip')
+    if not target_ip:
+        return jsonify({"error": "target_ip is required"}), 400
+    
+    result = measurement_client.measure_latency(target_ip)
+    return jsonify(result)
+
+@app.route('/viseu/api/latency/<measurement_id>', methods=['GET'])
+def get_latency_result(measurement_id):
+    result = measurement_client.get_measurement_result(measurement_id)
+    return jsonify(result)
 
 @app.route('/viseu/api/imagenet', methods=['POST'])
 def get_prediction():
