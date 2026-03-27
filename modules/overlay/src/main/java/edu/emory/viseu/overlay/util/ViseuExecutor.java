@@ -1,12 +1,11 @@
 package edu.emory.viseu.overlay.util;
 
 import edu.emory.viseu.overlay.OverlayManager;
-import edu.emory.viseu.overlay.model.Peer;
-import edu.emory.viseu.overlay.util.AdaptiveScheduler;
+import edu.emory.viseu.overlay.WorkflowEngine;
+import edu.emory.viseu.overlay.model.Task;
+import edu.emory.viseu.overlay.model.Workflow;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Optional;
 
 /**
  * Execute the core workflow
@@ -21,15 +20,23 @@ public class ViseuExecutor {
 		logger.info("Starting Viseu Overlay Service...");
         OverlayManager.getInstance().start();
 
-        // Demonstration of Adaptive Scheduler (Task 5)
-        logger.info("Triggering Adaptive Scheduler demo...");
-        Optional<Peer> bestPeer = AdaptiveScheduler.findBestPeer("ImageNetClassification");
+        // Demonstration of Decentralized Workflow Engine (Task 6)
+        logger.info("Triggering Decentralized Workflow demo...");
         
-        if (bestPeer.isPresent()) {
-            logger.info("Optimized Selection: Peer " + bestPeer.get().getId() + " is the primary candidate for offloading.");
-        } else {
-            logger.warn("Scheduler could not identify a primary candidate. Operation will continue locally.");
-        }
+        Workflow workflow = new Workflow("MedicalImageAnalysis");
+        
+        Task preProcess = new Task("T1", "DicomPreprocessing");
+        Task classification = new Task("T2", "ImageNetClassification");
+        classification.addDependency("T1");
+        Task storage = new Task("T3", "ResultStorage");
+        storage.addDependency("T2");
+
+        workflow.addTask(preProcess);
+        workflow.addTask(classification);
+        workflow.addTask(storage);
+
+        WorkflowEngine engine = new WorkflowEngine();
+        engine.run(workflow);
 		
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime);
