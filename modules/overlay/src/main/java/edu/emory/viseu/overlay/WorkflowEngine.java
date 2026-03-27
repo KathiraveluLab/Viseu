@@ -4,6 +4,7 @@ import edu.emory.viseu.overlay.model.Peer;
 import edu.emory.viseu.overlay.model.Task;
 import edu.emory.viseu.overlay.model.Workflow;
 import edu.emory.viseu.overlay.util.AdaptiveScheduler;
+import edu.emory.viseu.overlay.util.CloudBurstingBridge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,17 +55,19 @@ public class WorkflowEngine {
             logger.info("Selected Peer " + target.getId() + " for task " + task.getId());
 
             // 2. Simulate task execution on the remote node
-            // In a full implementation, this involves a P2P message and a response.
             Object result = simulateRemoteExecution(target, task);
             
-            // 3. Update task status and output
-            task.setOutput(result);
+            task.setOutput("[EDGE] " + result);
             task.setCompleted(true);
-            logger.info("Task " + task.getId() + " COMPLETED on " + target.getId());
+            logger.info("Task " + task.getId() + " COMPLETED on EDGE node " + target.getId());
         } else {
-            logger.error("Failed to find a suitable peer for task: " + task.getId());
-            // In a production system, we might retry or mark the task as FAILED.
-            task.setCompleted(true); // Mark as completed for the sake of demo progression
+            // 3. Fallback to Cloud Bursting
+            logger.warn("No suitable edge peer found. Falling back to CLOUD for " + task.getId());
+            Object cloudResult = CloudBurstingBridge.executeOnCloud(task);
+            
+            task.setOutput("[CLOUD] " + cloudResult);
+            task.setCompleted(true);
+            logger.info("Task " + task.getId() + " COMPLETED on CLOUD.");
         }
     }
 

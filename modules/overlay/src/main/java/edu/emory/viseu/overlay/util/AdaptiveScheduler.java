@@ -60,11 +60,17 @@ public class AdaptiveScheduler {
             }
         }
 
-        if (bestPeer != null) {
+        if (bestPeer != null && highestScore > 10.0) {
             logger.info("Adaptive Scheduler selected Peer: " + bestPeer.getId() + " with score: " + highestScore);
+            return Optional.of(bestPeer);
+        } else {
+            if (bestPeer != null) {
+                logger.warn("Best edge peer score (" + highestScore + ") is below threshold. Bursting to CLOUD.");
+            } else {
+                logger.warn("No edge peers available. Bursting to CLOUD.");
+            }
+            return Optional.empty(); // Returning empty triggers the cloud fallback in the engine
         }
-
-        return Optional.ofNullable(bestPeer);
     }
 
     /**
