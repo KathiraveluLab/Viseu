@@ -12,18 +12,26 @@ import java.util.UUID;
  */
 public class OverlayManager {
     private static final Logger logger = LogManager.getLogger(OverlayManager.class);
+    private static OverlayManager instance;
     private final String nodeId;
     private final int port;
     private final OverlayServer server;
     private final OverlayClient client;
     private final Peer self;
 
-    public OverlayManager(int port) {
+    private OverlayManager(int port) {
         this.nodeId = "viseu-node-" + UUID.randomUUID().toString().substring(0, 8);
         this.port = port;
         this.server = new OverlayServer(port);
         this.client = new OverlayClient();
         this.self = new Peer(nodeId, "127.0.0.1", port);
+    }
+
+    public static synchronized OverlayManager getInstance() {
+        if (instance == null) {
+            instance = new OverlayManager(5005); // Default port
+        }
+        return instance;
     }
 
     public void start() {
