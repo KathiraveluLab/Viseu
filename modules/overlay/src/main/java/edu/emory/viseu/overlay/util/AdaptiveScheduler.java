@@ -45,10 +45,11 @@ public class AdaptiveScheduler {
             double latency = simulateLatency(peer.getIp());
 
             // 3. Compute Weighted Score
-            // Score = (Trust * Wt) + ((1/Latency) * Wl)
-            // Note: 1/latency favors lower values.
+            // Score = (Trust * Wt) + ((100/Latency) * Wl) - (CPULoad * 50 * Wc)
+            // Note: 1/latency favors lower values. Lower CPU load is also better.
             double latencyBenefit = (latency > 0) ? (100.0 / latency) : 0; 
-            double finalScore = (trustScore * WEIGHT_TRUST) + (latencyBenefit * WEIGHT_LATENCY);
+            double cpuPenalty = peer.getCpuLoad() * 50.0; // Assume 0.0 to 1.0, scale to 50
+            double finalScore = (trustScore * WEIGHT_TRUST) + (latencyBenefit * WEIGHT_LATENCY) - (cpuPenalty * 0.2);
 
             logger.info(String.format("Peer %s Score: %.2f (Trust: %.2f, Latency: %.2fms)", 
                 peer.getId(), finalScore, trustScore, latency));
