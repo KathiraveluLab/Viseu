@@ -37,10 +37,7 @@ public class PeerRegistryTest {
 
         Peer retrievedPeer = registry.getPeer("peer1");
         assertNotNull("Retrieved peer should not be null", retrievedPeer);
-        assertEquals("Retrieved peer should be the same as the registered one", peer, retrievedPeer);
-        assertEquals("peer1", retrievedPeer.getId());
-        assertEquals("127.0.0.1", retrievedPeer.getIp());
-        assertEquals(8080, retrievedPeer.getPort());
+        assertSame("Retrieved peer should be the same as the registered one", peer, retrievedPeer);
     }
 
     @Test
