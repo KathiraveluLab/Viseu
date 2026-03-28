@@ -76,8 +76,8 @@ public class PeerRegistryTest {
         Collection<Peer> peers = registry.getAllPeers();
         assertNotNull("Peers collection should not be null", peers);
         assertEquals("Peers collection should contain exactly 3 peers", 3, peers.size());
-        assertTrue("Peers collection should contain peer1", peers.stream().anyMatch(p -> "peer1".equals(p.getId())));
-        assertTrue("Peers collection should contain peer2", peers.stream().anyMatch(p -> "peer2".equals(p.getId())));
-        assertTrue("Peers collection should contain peer3", peers.stream().anyMatch(p -> "peer3".equals(p.getId())));
+java.util.Set<String> expectedIds = java.util.Set.of("peer1", "peer2", "peer3");
+java.util.Set<String> actualIds = peers.stream().map(Peer::getId).collect(java.util.stream.Collectors.toSet());
+assertEquals("Peers collection should contain exactly the registered peers", expectedIds, actualIds);
     }
 }
