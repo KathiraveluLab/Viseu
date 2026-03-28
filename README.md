@@ -54,3 +54,9 @@ mvn clean install
 ```bash
 mvn exec:java -Dexec.mainClass="edu.emory.viseu.overlay.util.ViseuBenchmark"
 ```
+
+# Citing Viseu
+
+If you use Viseu in your research, please cite the below paper:
+
+* Kathiravelu, P., Zaiman, Z., Gichoya, J., Veiga, L., & Banerjee, I. (2022). **Towards an internet-scale overlay network for latency-aware decentralized workflows at the edge.** Computer networks, 203, 108654.
