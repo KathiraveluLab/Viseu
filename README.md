@@ -55,7 +55,7 @@ mvn clean install
 mvn exec:java -Dexec.mainClass="edu.emory.viseu.overlay.util.ViseuBenchmark"
 ```
 
-# Citing Viseu
+## Citing Viseu
 
 If you use Viseu in your research, please cite the below paper:
 
