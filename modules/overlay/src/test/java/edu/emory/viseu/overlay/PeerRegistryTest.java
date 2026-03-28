@@ -13,7 +13,7 @@ public class PeerRegistryTest {
     private PeerRegistry registry;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws ReflectiveOperationException {
         // Reset the singleton instance using reflection to ensure strict test isolation
         java.lang.reflect.Field instanceField = PeerRegistry.class.getDeclaredField("instance");
         instanceField.setAccessible(true);
