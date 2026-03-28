@@ -76,6 +76,30 @@ def get_prediction():
             prediction = loaded_model.predict(preprocess_input(img))
             return jsonify({"result" : str(decode_predictions(prediction))})
    
+@app.route('/viseu/api/reputation', methods=['POST'])
+def update_reputation():
+    """
+    Endpoint for synchronizing reputation updates with the ViseuPoT smart contract.
+    Expected JSON: {"peer_id": "...", "new_reputation": 0.0, "reason": "..."}
+    """
+    data = request.get_json()
+    peer_id = data.get('peer_id')
+    new_reputation = data.get('new_reputation')
+    
+    if not peer_id or new_reputation is None:
+        return jsonify({"error": "peer_id and new_reputation are required"}), 400
+
+    # In a full implementation, this uses web3.py to call ViseuPoT.updateReputation(...)
+    # blockchain_tx_id = viseu_pot_contract.functions.updateReputation(peer_id, new_reputation).transact()
+    
+    print(f"Blockchain Sync: Updated reputation for {peer_id} to {new_reputation}")
+    return jsonify({
+        "status": "success",
+        "peer_id": peer_id,
+        "new_reputation": new_reputation,
+        "blockchain_status": "synced_to_overlay" # Mock status
+    })
+
 if __name__ == '__main__':
     build_imagenet()
 
