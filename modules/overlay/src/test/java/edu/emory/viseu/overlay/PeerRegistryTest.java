@@ -15,7 +15,7 @@ public class PeerRegistryTest {
     @Before
     public void setUp() throws ReflectiveOperationException {
         // Reset the singleton instance using reflection to ensure strict test isolation
-        java.lang.reflect.Field instanceField = PeerRegistry.class.getDeclaredField("instance");
+        Field instanceField = PeerRegistry.class.getDeclaredField("instance");
         instanceField.setAccessible(true);
         instanceField.set(null, null);
 
