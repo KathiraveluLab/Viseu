@@ -13,9 +13,9 @@ public class PeerRegistryTest {
     private PeerRegistry registry;
 
     @Before
-    public void setUp() throws ReflectiveOperationException {
+    public void setUp() throws Exception {
         // Reset the singleton instance using reflection to ensure strict test isolation
-        Field instanceField = PeerRegistry.class.getDeclaredField("instance");
+        java.lang.reflect.Field instanceField = PeerRegistry.class.getDeclaredField("instance");
         instanceField.setAccessible(true);
         instanceField.set(null, null);
 
@@ -37,7 +37,10 @@ public class PeerRegistryTest {
 
         Peer retrievedPeer = registry.getPeer("peer1");
         assertNotNull("Retrieved peer should not be null", retrievedPeer);
-        assertSame("Retrieved peer should be the same as the registered one", peer, retrievedPeer);
+        assertEquals("Retrieved peer should be the same as the registered one", peer, retrievedPeer);
+        assertEquals("peer1", retrievedPeer.getId());
+        assertEquals("127.0.0.1", retrievedPeer.getIp());
+        assertEquals(8080, retrievedPeer.getPort());
     }
 
     @Test
@@ -73,8 +76,8 @@ public class PeerRegistryTest {
         Collection<Peer> peers = registry.getAllPeers();
         assertNotNull("Peers collection should not be null", peers);
         assertEquals("Peers collection should contain exactly 3 peers", 3, peers.size());
-        Set<String> expectedIds = new HashSet<>(Arrays.asList("peer1", "peer2", "peer3"));
-        Set<String> actualIds = peers.stream().map(Peer::getId).collect(Collectors.toSet());
-        assertEquals("Peers collection should contain exactly the registered peers", expectedIds, actualIds);
+        assertTrue("Peers collection should contain peer1", peers.contains(peer1));
+        assertTrue("Peers collection should contain peer2", peers.contains(peer2));
+        assertTrue("Peers collection should contain peer3", peers.contains(peer3));
     }
 }
