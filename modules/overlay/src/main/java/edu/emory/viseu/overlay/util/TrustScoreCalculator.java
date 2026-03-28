@@ -11,27 +11,30 @@ import org.apache.logging.log4j.Logger;
 public class TrustScoreCalculator {
     private static final Logger logger = LogManager.getLogger(TrustScoreCalculator.class);
 
+    // Decay constant (lambda) as specified in the Viseu research specifications.
+    // Represents the temporal sensitivity of trust.
+    private static final double LAMBDA = 0.0001; 
+
     /**
-     * Calculates the Trust Score (T) for a given peer.
-     * T = f(Reputation, ResourceCommitment, Time)
+     * Calculates the Trust Score (T) for a given peer using temporal integration.
+     * T = S * R * exp(-lambda * delta_t)
      * 
      * @param peer The peer to calculate trust for.
-     * @return Calculated trust score.
+     * @return Calculated trust score aligned with Viseu architectural specifications.
      */
     public static double calculateTrust(Peer peer) {
         long now = System.currentTimeMillis();
-        long age = (now - peer.getLastHeartbeat()) / 1000; // time in seconds since last contact
+        double deltaTime = (double) (now - peer.getLastHeartbeat()) / 1000.0; // Seconds
 
-        // Base trust is the peer's reputation
+        double stake = peer.getStake();
         double reputation = peer.getReputation();
 
-        // Time decay factor: Trust decreases if the peer hasn't been seen recently
-        double timeDecay = Math.max(0.1, 1.0 - (age / 3600.0)); // decays over 1 hour
+        // Implement the temporal exponential decay as specified in the Viseu paper.
+        double temporalFactor = Math.exp(-LAMBDA * deltaTime);
+        double trustScore = stake * reputation * temporalFactor;
 
-        double trustScore = reputation * timeDecay;
-
-        logger.debug(String.format("Calculated trust for %s: %.2f (Rep: %.2f, Age: %ds)", 
-            peer.getId(), trustScore, reputation, age));
+        logger.debug(String.format("PoT Calculation for %s: Score=%.4f (S=%.2f, R=%.2f, dT=%.2fs)", 
+            peer.getId(), trustScore, stake, reputation, deltaTime));
 
         return trustScore;
     }

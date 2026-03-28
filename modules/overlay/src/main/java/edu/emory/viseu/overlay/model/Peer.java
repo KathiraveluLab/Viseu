@@ -9,29 +9,35 @@ public class Peer implements Serializable {
     private final String id;
     private final String ip;
     private final int port;
-    private double reputation; // Legacy reputation field
+    // Proof of Trust (PoT) Components
+    private double reputation; 
+    private double stake;         // Proof of Stake (Wealth Component)
     private long lastHeartbeat;
-
-    // Real-time Resource Metrics (Task 2)
+ 
+    // Real-time Resource Metrics
     private double cpuLoad;       // 0.0 to 1.0
     private long memoryAvailable; // in MB
-
+ 
     public Peer(String id, String ip, int port) {
         this.id = id;
         this.ip = ip;
         this.port = port;
         this.reputation = 0.5; // Default reputation
+        this.stake = 1.0;      // Default initial stake
         this.lastHeartbeat = System.currentTimeMillis();
         this.cpuLoad = 0.0;
         this.memoryAvailable = 1024; // Default 1GB
     }
-
+ 
     public String getId() { return id; }
     public String getIp() { return ip; }
     public int getPort() { return port; }
     
     public double getReputation() { return reputation; }
     public void setReputation(double reputation) { this.reputation = reputation; }
+ 
+    public double getStake() { return stake; }
+    public void setStake(double stake) { this.stake = stake; }
 
     public double getCpuLoad() { return cpuLoad; }
     public void setCpuLoad(double cpuLoad) { this.cpuLoad = cpuLoad; }

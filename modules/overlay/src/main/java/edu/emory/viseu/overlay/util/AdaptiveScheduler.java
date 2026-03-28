@@ -60,7 +60,7 @@ public class AdaptiveScheduler {
             }
         }
 
-        if (bestPeer != null && highestScore > 10.0) {
+        if (bestPeer != null && highestScore > 5.0) {
             logger.info("Adaptive Scheduler selected Peer: " + bestPeer.getId() + " with score: " + highestScore);
             return Optional.of(bestPeer);
         } else {
