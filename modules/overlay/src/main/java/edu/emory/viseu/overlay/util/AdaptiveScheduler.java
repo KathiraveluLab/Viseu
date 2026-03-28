@@ -14,9 +14,12 @@ import java.util.Optional;
 public class AdaptiveScheduler {
     private static final Logger logger = LogManager.getLogger(AdaptiveScheduler.class);
 
-    // Weights for the selection formula (can be tuned or moved to constants)
+    // Weights for the selection formula
     private static final double WEIGHT_TRUST = 0.6;
     private static final double WEIGHT_LATENCY = 0.4;
+
+    // Cluster-wide latency tracker for adaptive thresholding
+    private static final LatencyTracker clusterLatencyTracker = new LatencyTracker();
 
     /**
      * Finds the best peer for a given service request.
@@ -45,11 +48,12 @@ public class AdaptiveScheduler {
             double latency = simulateLatency(peer.getIp());
 
             // 3. Compute Weighted Score
-            // Score = (Trust * Wt) + ((100/Latency) * Wl) - (CPULoad * 50 * Wc)
-            // Note: 1/latency favors lower values. Lower CPU load is also better.
             double latencyBenefit = (latency > 0) ? (100.0 / latency) : 0; 
-            double cpuPenalty = peer.getCpuLoad() * 50.0; // Assume 0.0 to 1.0, scale to 50
+            double cpuPenalty = peer.getCpuLoad() * 50.0; 
             double finalScore = (trustScore * WEIGHT_TRUST) + (latencyBenefit * WEIGHT_LATENCY) - (cpuPenalty * 0.2);
+
+            // Record latency into the cluster tracker for future P95 calculations
+            clusterLatencyTracker.recordLatency(latency);
 
             logger.info(String.format("Peer %s Score: %.2f (Trust: %.2f, Latency: %.2fms)", 
                 peer.getId(), finalScore, trustScore, latency));
@@ -60,16 +64,28 @@ public class AdaptiveScheduler {
             }
         }
 
-        if (bestPeer != null && highestScore > 5.0) {
-            logger.info("Adaptive Scheduler selected Peer: " + bestPeer.getId() + " with score: " + highestScore);
+        // Adaptive Thresholding logic as per Viseu paper:
+        // Trigger Cloud-Bursting if the best peer's latency exceeds the cluster P95.
+        // Also enforcing a minimum trust score.
+        double p95Threshold = clusterLatencyTracker.getP95();
+        double bestPeerLatency = (bestPeer != null) ? simulateLatency(bestPeer.getIp()) : Double.MAX_VALUE;
+
+        if (bestPeer != null && bestPeerLatency <= p95Threshold && highestScore > 2.0) {
+            logger.info(String.format("Adaptive Scheduler selected Peer: %s (Latency: %.2fms <= P95: %.2fms)", 
+                bestPeer.getId(), bestPeerLatency, p95Threshold));
             return Optional.of(bestPeer);
         } else {
             if (bestPeer != null) {
-                logger.warn("Best edge peer score (" + highestScore + ") is below threshold. Bursting to CLOUD.");
+                if (bestPeerLatency > p95Threshold) {
+                    logger.warn(String.format("Best peer latency (%.2fms) exceeds P95 threshold (%.2fms). Bursting to CLOUD.", 
+                        bestPeerLatency, p95Threshold));
+                } else {
+                    logger.warn("Best edge peer trust/score (" + highestScore + ") is below threshold. Bursting to CLOUD.");
+                }
             } else {
                 logger.warn("No edge peers available. Bursting to CLOUD.");
             }
-            return Optional.empty(); // Returning empty triggers the cloud fallback in the engine
+            return Optional.empty(); 
         }
     }
 
