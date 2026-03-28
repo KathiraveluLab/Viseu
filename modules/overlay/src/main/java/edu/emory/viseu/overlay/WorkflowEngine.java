@@ -58,6 +58,16 @@ public class WorkflowEngine {
             // 2. Simulate task execution on the remote node
             Object result = simulateRemoteExecution(target, task);
             
+            // 3. Decentralized Arbitration (Point 4)
+            if (edu.emory.viseu.overlay.util.ArbitrationService.requiresArbitration(target, task)) {
+                boolean verified = edu.emory.viseu.overlay.util.ArbitrationService.verifyResult(target, task, result);
+                if (!verified) {
+                    logger.error("Arbitration failed for task " + task.getId() + ". Re-dispatching.");
+                    executeTask(task); // Re-dispatch to find a better peer
+                    return;
+                }
+            }
+
             task.setOutput("[EDGE] " + result);
             task.setEndTime(System.currentTimeMillis());
             task.setCompleted(true);
