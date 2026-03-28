@@ -16,7 +16,6 @@
 
     <modules>
         <module>overlay</module>
-        <module>smart-contracts</module>
     </modules>
 
 </project>
