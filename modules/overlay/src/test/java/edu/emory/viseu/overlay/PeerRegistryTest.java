@@ -13,12 +13,13 @@ public class PeerRegistryTest {
     private PeerRegistry registry;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        // Reset the singleton instance using reflection to ensure strict test isolation
+        java.lang.reflect.Field instanceField = PeerRegistry.class.getDeclaredField("instance");
+        instanceField.setAccessible(true);
+        instanceField.set(null, null);
+
         registry = PeerRegistry.getInstance();
-        // Clear the registry before each test to ensure test isolation
-        for (Peer peer : registry.getAllPeers()) {
-            registry.removePeer(peer.getId());
-        }
     }
 
     @Test
