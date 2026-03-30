@@ -31,3 +31,4 @@ hs_err_pid*
 .cursor
 _bmad
 *.env
+.vscode

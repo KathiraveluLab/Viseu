@@ -65,12 +65,38 @@ public class TrustScoreCalculator {
 
     /**
      * Synchronizes reputation updates with the Viseu Ethereum bridge.
-     * In a production-hardened environment, this uses a REST call to the Python API.
+     * Uses a REST call to the Python API (app.py) to trigger on-chain PoT updates.
      */
     private static void syncToBlockchain(String peerId, double reputation, String reason) {
-        // Implementation of the REST bridge to /viseu/api/reputation as specified in the paper.
-        // THe Blockchain interaction is handled asynchronously to avoid scheduling latency.
         logger.info(String.format("Synchronizing Proof of Trust [%s] for Peer %s to Blockchain (ViseuPoT.sol)", 
             reason, peerId));
+
+        // Asynchronous REST call to avoid blocking the scheduler's decision loop
+        new Thread(() -> {
+            try {
+                java.net.URL url = new java.net.URL("http://localhost:5001/viseu/api/reputation");
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+
+                String jsonInput = String.format("{\"peer_id\": \"%s\", \"new_reputation\": %.2f, \"reason\": \"%s\"}", 
+                    peerId, reputation, reason);
+
+                try (java.io.OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonInput.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                int code = conn.getResponseCode();
+                if (code == 200) {
+                    logger.info("Successfully anchored reputation for " + peerId + " on-chain.");
+                } else {
+                    logger.warn("Blockchain synchronization failed for " + peerId + " (Code: " + code + ")");
+                }
+            } catch (Exception e) {
+                logger.error("Blockchain Bridge Error: " + e.getMessage());
+            }
+        }).start();
     }
 }

@@ -32,24 +32,39 @@ public class ScannerUtil {
         ss.produceFinalCSV(index, date, scannersSubsetMap);
     }
 
+    /**
+     * Calculates the difference in minutes between two time strings (HHMMSS).
+     * Correctly handles midnight rollover (e.g., 2359 to 0001).
+     */
     public static double getDiffInMins(String start, String end) {
-        String startTime = String.valueOf(Double.parseDouble(start) + 240000);
-        String endTime = String.valueOf(Double.parseDouble(end) + 240000);
-        double durationInMins;
-
         try {
-            durationInMins = (Double.parseDouble(endTime.substring(0,2)) -
-                    Double.parseDouble(startTime.substring(0,2))) * 60.0 +
-                    (Double.parseDouble(endTime.substring(2,4)) -
-                            Double.parseDouble(startTime.substring(2,4))) +
-                    (Double.parseDouble(endTime.substring(4,6)) -
-                            Double.parseDouble(startTime.substring(4,6))) / 60.0  ;
+            // Standardizing strings to 6 digits (HHMMSS)
+            String s = String.format("%06d", (int)Double.parseDouble(start));
+            String e = String.format("%06d", (int)Double.parseDouble(end));
 
+            double startH = Double.parseDouble(s.substring(0, 2));
+            double startM = Double.parseDouble(s.substring(2, 4));
+            double startS = Double.parseDouble(s.substring(4, 6));
+
+            double endH = Double.parseDouble(e.substring(0, 2));
+            double endM = Double.parseDouble(e.substring(2, 4));
+            double endS = Double.parseDouble(e.substring(4, 6));
+
+            double startTotalMins = (startH * 60.0) + startM + (startS / 60.0);
+            double endTotalMins = (endH * 60.0) + endM + (endS / 60.0);
+
+            double diff = endTotalMins - startTotalMins;
+
+            // Handle midnight rollover: If end < start, assume it's the next day
+            if (diff < 0) {
+                diff += 1440; // Add 24 hours in minutes
+            }
+
+            return diff;
         } catch (Exception e) {
-            logger.error("Calculating duration failed");
-            durationInMins = 99999;
+            logger.error("Calculating duration failed for start: " + start + ", end: " + end);
+            return 99999;
         }
-        return durationInMins;
     }
 
 }

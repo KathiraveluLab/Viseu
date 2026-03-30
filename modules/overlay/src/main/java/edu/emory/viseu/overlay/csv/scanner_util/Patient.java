@@ -78,8 +78,7 @@ public class Patient {
 
 
     public boolean updateIfTheSameExam (String newStart, String newEnd) {
-
-        // TODO: Consider for 2359 -> 0000 cases.
+        // Midnight rollover cases are handled by ScannerUtil.getDiffInMins
         double s1e1 = getDiffInMins(startTime, endTime);
         double s2e2 = getDiffInMins(newStart, newEnd);
 

@@ -77,9 +77,31 @@ class MeasurementClient:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
+    def wait_for_results(self, m_id, timeout=300, interval=10):
+        """
+        Synchronously polls the RIPE Atlas API until results are available or timeout is reached.
+        """
+        elapsed = 0
+        while elapsed < timeout:
+            results = self.get_measurement_result(m_id)
+            
+            # RIPE Atlas returns a list of results if available
+            if isinstance(results, list) and len(results) > 0:
+                return results
+            
+            # If the response is a dict with an error, it might just be 'Not Found' yet
+            if isinstance(results, dict) and "error" in results:
+                # We expect 404/waiting if results aren't ready
+                pass
+            
+            time.sleep(interval)
+            elapsed += interval
+            
+        return {"error": f"Polling timed out after {timeout} seconds"}
+
     def measure_latency(self, target_ip):
         """
-        High-level function to measure latency and return the average RTT.
+        High-level function to measure latency, wait for results, and return average RTT.
         """
         create_res = self.create_ping_measurement(target_ip)
         if "error" in create_res:
@@ -87,13 +109,33 @@ class MeasurementClient:
 
         m_id = create_res.get("measurements", [None])[0]
         if not m_id:
-            return {"error": "Failed to retrieve measurement ID"}
+            return {"error": f"Failed to retrieve measurement ID. Response: {create_res}"}
 
-        # Wait for results (RIPE Atlas one-offs take a few minutes)
-        # For this prototype implementation, we'll return the ID for async polling
-        return {"measurement_id": m_id, "status": "pending"}
+        # Wait for results synchronously
+        results = self.wait_for_results(m_id)
+        
+        if isinstance(results, dict) and "error" in results:
+            return results
+
+        # Parse RIPE Atlas ping result format
+        try:
+            # Taking the first result from the probe
+            first_result = results[0]
+            avg_rtt = first_result.get("avg", -1.0)
+            
+            if avg_rtt == -1.0:
+                # Fallback to 'min' or 'max' if 'avg' is missing (unlikely for ping)
+                avg_rtt = first_result.get("min", -1.0)
+
+            return {
+                "status": "success",
+                "target_ip": target_ip,
+                "latency_ms": avg_rtt,
+                "measurement_id": m_id
+            }
+        except (IndexError, KeyError, TypeError) as e:
+            return {"error": f"Failed to parse measurement results: {str(e)}", "raw_result": results}
 
 if __name__ == "__main__":
     client = MeasurementClient()
-    # Simple check
-    print(f"API Key loaded: {'Yes' if client.api_key else 'No'}")
+    print(f"Viseu Measurement Client Initialized. API Key: {'Detected' if client.api_key else 'Missing'}")
