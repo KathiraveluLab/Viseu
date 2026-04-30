@@ -43,11 +43,8 @@ The framework is organized into specialized modules:
 
 ### Build and Installation
 ```bash
-# Initialize dependencies and smart contracts
-./modules/viseu_ethereum/initialization/setup.sh
-
-# Build the Maven project
-mvn clean install
+# Initialize dependencies, configure local sources, and build the project
+./setup.sh
 ```
 
 ### Running Benchmarks

@@ -32,3 +32,14 @@ hs_err_pid*
 _bmad
 *.env
 .vscode
+
+# Viseu Generated Artifacts
+modules/viseu_ethereum/initialization/genesis.json
+/smart-contracts/
+
+# Geth Data and Logs
+**/geth/
+**/keystore/
+*.out
+node*/
+datadir*/
